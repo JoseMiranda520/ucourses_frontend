@@ -2,8 +2,18 @@
   <div class="body-index">
     <section class="section1">
       <div>
-        <h1>Parque automotriz</h1>
-        <p>by: José Javier Miranda</p>
+        <h1>Solicita tu viaje</h1>
+        <q-input v-model="punto_salida" label="Ingresa el punto de partida" type="text" />
+        <br />
+        <q-input v-model="punto_llegada" label="¿A dónde vamos?" type="text" />
+        <br />
+        <q-btn
+          :loading="loaderBtn"
+          @click="requestTrip()"
+          style="width: 150px"
+        >
+          Solicitar
+        </q-btn>
       </div>
     </section>
     <section class="section2">
@@ -40,13 +50,86 @@ export default {
   data() {
     return {
       courses_link: [],
+      punto_salida: null,
+      punto_llegada: null,
+      loaderBtn: false
     };
   },
   methods: {
+    courses() {
+      this.$axios
+        .get(this.$utils.api_backend + "courses/", {
+          headers: {
+            Authorization: "Token " + sessionStorage.getItem("token"),
+          },
+        })
+        .then((response) => {
+          if (response.data.type == "ok") {
+            this.courses_link = response.data.detail;
+          } else if (response.data.type == "error") {
+            this.notification(response.data.detail);
+          } else {
+            this.notification("Algo esta salio mal, contacta al administrador");
+          }
+        })
+        .catch((error) => {
+          this.notification(error.message);
+        });
+    },
     session() {
       if (!this.$utils.authenticated) {
         this.$router.push('/')
       }
+    },
+    requestTrip() {
+      if (
+        (this.punto_salida !== "" && this.punto_salida !== null) ||
+        (this.punto_llegada !== "" && this.punto_llegada !== null)
+      ) {
+        this.$axios
+          .post(this.$utils.api_backend + "viajes/", {
+            nombre_del_cliente: this.$utils.username,
+            punto_salida: this.punto_salida,
+            punto_llegada: this.punto_llegada,
+            estado: 'solicitado',
+          })
+          .then((response) => {
+            console.log(response)
+            if (response.data.token) {
+              this.$utils.authenticated = true;
+              this.$utils.permisos = response.data.permissions
+              this.$utils.token = response.data.token
+              this.$router.push("/index");
+            } else if (response.data.type == "error") {
+              this.notification(response.data.detail);
+            } else {
+              this.notification(
+                "Algo esta salio mal, contacta al administrador"
+              );
+            }
+          })
+          .catch((error) => {
+            console.log("PAGE ERROR: ", error);
+          });
+      } else {
+        console.log("ingrese los datos de viaje");
+      }
+    },
+    simulateProgress(number) {
+      // we set loading state
+      this[`loading${number}`] = true;
+      // simulate a delay
+      setTimeout(() => {
+        // we're done, we reset loading state
+        this[`loading${number}`] = false;
+      }, 3000);
+    },
+    notification(text) {
+      this.$q.notify({
+        message: text,
+        icon: "announcement",
+        color: "red",
+      });
     },
     user_by_id(value) {
       this.$axios

@@ -1,6 +1,8 @@
 import { boot } from "quasar/wrappers";
 
 const utils = {
+  permisos: '',
+  username: '',
   authenticated: false,
   api_backend: "http://localhost:8004/api/",
   token: ''

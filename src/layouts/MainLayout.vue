@@ -31,6 +31,17 @@
           </q-item-section>
         </q-item>
 
+        <q-item clickable tag="a" @click="this.$router.push('/viajes')">
+          <q-item-section avatar>
+            <q-icon name="drive_eta" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>Viajes</q-item-label>
+            <q-item-label caption> Gestión de viajes </q-item-label>
+          </q-item-section>
+        </q-item>
+
         <q-item clickable tag="a" href="http://127.0.0.1:8004/admin/">
           <q-item-section avatar>
             <q-icon name="person" />
@@ -42,29 +53,8 @@
           </q-item-section>
         </q-item>
 
-        <q-item clickable tag="a" @click="this.$router.push('/exams')">
-          <q-item-section avatar>
-            <q-icon name="book" />
-          </q-item-section>
-
-          <q-item-section>
-            <q-item-label>Solicitar Transporte</q-item-label>
-            <q-item-label caption> Solicitar un transporte </q-item-label>
-          </q-item-section>
-        </q-item>
-
-        <q-item clickable tag="a" @click="this.$router.push('/profile')">
-          <q-item-section avatar>
-            <q-icon name="person" />
-          </q-item-section>
-
-          <q-item-section>
-            <q-item-label>Perfil</q-item-label>
-            <q-item-label caption> mis calificaciones </q-item-label>
-          </q-item-section>
-        </q-item> 
-
-        <q-item clickable tag="a" @click="this.$router.push('/')">
+          {{this.$utils.authenticated}}
+        <q-item clickable tag="a" @click="this.$router.push('/'), this.$utils.authenticated = false">
           <q-item-section avatar>
             <q-icon name="logout" />
           </q-item-section>

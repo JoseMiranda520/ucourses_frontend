@@ -2,7 +2,7 @@
   <div class="body-login">
     <div class="container">
       <div class="autenticacion">
-        <h2 class="text-light-blue-8">Boat Trip</h2>
+        <h2 class="text-light-blue-8">Login</h2>
         <q-input v-model="username" label="User" />
         <br />
         <q-input v-model="password" label="Password" type="password" />
@@ -65,7 +65,9 @@ export default {
             console.log(response)
             if (response.data.token) {
               this.$utils.authenticated = true;
+              this.$utils.permisos = response.data.permissions
               this.$utils.token = response.data.token
+              this.$utils.username = response.data.user.username
               // sessionStorage.setItem("username", this.username);
               // sessionStorage.setItem("id", response.data.detail.id);
               // sessionStorage.setItem("token", response.data.detail.token);
