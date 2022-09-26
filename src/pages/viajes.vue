@@ -83,7 +83,7 @@ export default {
     },
     requestTrip() {
       if (
-        (this.punto_salida !== "" && this.punto_salida !== null) ||
+        (this.punto_salida !== "" && this.punto_salida !== null && this.$utils.authenticated) ||
         (this.punto_llegada !== "" && this.punto_llegada !== null)
       ) {
         this.$axios
@@ -92,6 +92,11 @@ export default {
             punto_salida: this.punto_salida,
             punto_llegada: this.punto_llegada,
             estado: 'solicitado',
+          },
+          {
+            headers: {
+              'Authorization': `JWT ${this.$utils.token}`
+            }
           })
           .then((response) => {
             console.log(response)
@@ -124,7 +129,7 @@ export default {
         this[`loading${number}`] = false;
       }, 3000);
     },
-    notification(text) {
+    notificatio(text) {
       this.$q.notify({
         message: text,
         icon: "announcement",
